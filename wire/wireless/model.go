@@ -16,6 +16,5 @@ type UserM struct {
 }
 
 func (*UserM) TableName() string {
-    return "uc_user"
+	return "uc_user"
 }
-

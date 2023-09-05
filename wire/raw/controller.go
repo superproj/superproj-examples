@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"time"
 	"fmt"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -15,11 +15,10 @@ type UserCenterService struct {
 
 func NewUserCenterService(db *gorm.DB) *UserCenterService {
 	// 创建 Biz 层实例
-    biz := NewBiz(db)
+	biz := NewBiz(db)
 
 	return &UserCenterService{biz: biz}
 }
-
 
 // Define List User API
 type ListUserRequest struct {
@@ -28,12 +27,12 @@ type ListUserRequest struct {
 }
 
 type UserReply struct {
-	UserID   string `json:"userID"`
-	Username string `json:"username"`
-	Nickname string `json:"nickname"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Phone    string `json:"phone"`
+	UserID    string    `json:"userID"`
+	Username  string    `json:"username"`
+	Nickname  string    `json:"nickname"`
+	Password  string    `json:"password"`
+	Email     string    `json:"email"`
+	Phone     string    `json:"phone"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -43,7 +42,7 @@ type ListUserResponse struct {
 	Users      []*UserReply `json:"users"`
 }
 
-func (s *UserCenterService) ListUser(ctx context.Context, req *ListUserRequest)(*ListUserResponse, error) {
+func (s *UserCenterService) ListUser(ctx context.Context, req *ListUserRequest) (*ListUserResponse, error) {
 	fmt.Println("ListUser function called")
 	return s.biz.Users().List(ctx, req)
 }

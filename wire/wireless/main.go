@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"context"
 	"encoding/json"
+	"fmt"
+	"net/http"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -29,7 +29,7 @@ func main() {
 
 	// 定义处理请求的处理函数
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		resp, err := ucs.ListUser(context.Background(), &ListUserRequest{Offset:0, Limit:1})
+		resp, err := ucs.ListUser(context.Background(), &ListUserRequest{Offset: 0, Limit: 1})
 		if err != nil {
 			fmt.Fprintf(w, "ListUser failed: %v", err) // 向客户端发送响应
 			return
@@ -41,7 +41,7 @@ func main() {
 	})
 
 	// 启动HTTP服务并监听指定的端口
-	if err := http.ListenAndServe(":8080", nil); err != nil{
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println("启动 HTTP 服务失败:", err)
 	}
 }

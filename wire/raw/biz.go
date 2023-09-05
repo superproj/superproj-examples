@@ -18,7 +18,7 @@ type biz struct {
 
 func NewBiz(db *gorm.DB) *biz {
 	// 创建 Store 层实例
-    ds := NewStore(db)
+	ds := NewStore(db)
 
 	return &biz{ds: ds}
 }

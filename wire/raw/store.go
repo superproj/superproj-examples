@@ -35,17 +35,16 @@ func (ds *datastore) Users() UserStore {
 
 // Define user store
 type UserStore interface {
-	List(ctx context.Context,  offset, limit int) (int64, []*UserM, error)
+	List(ctx context.Context, offset, limit int) (int64, []*UserM, error)
 }
 
 type userStore struct {
-    db *gorm.DB
+	db *gorm.DB
 }
 
 func newUserStore(db *gorm.DB) *userStore {
-    return &userStore{db}
+	return &userStore{db}
 }
-
 
 func (d *userStore) List(ctx context.Context, offset, limit int) (count int64, ret []*UserM, err error) {
 	ans := d.db.
