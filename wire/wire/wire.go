@@ -14,7 +14,7 @@ import (
 
 // initApp 声明 injector 的函数签名
 func initApp(db *gorm.DB) *UserCenterService {
-	wire.Build(NewStore, NewBiz, NewUserCenterService)
+	wire.Build(StoreProviderSet, BizProviderSet, NewUserCenterService)
 
 	return nil //返回值没有实际意义，只需符合函数签名即可
 }

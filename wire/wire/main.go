@@ -18,14 +18,7 @@ func main() {
 		panic(err)
 	}
 
-	// 创建 Store 层实例
-	ds := NewStore(db)
-
-	// 创建 Biz 层实例
-	biz := NewBiz(ds)
-
-	// 创建 Controller 层实例
-	ucs := NewUserCenterService(biz)
+	ucs := initApp(db)
 
 	// 定义处理请求的处理函数
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

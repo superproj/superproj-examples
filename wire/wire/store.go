@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"github.com/google/wire"
 	"gorm.io/gorm"
 )
 
@@ -11,6 +12,8 @@ var (
 	once sync.Once
 	S    *datastore
 )
+
+var StoreProviderSet = wire.NewSet(NewStore, wire.Bind(new(IStore), new(*datastore)))
 
 // Define Store layer
 type IStore interface {

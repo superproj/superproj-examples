@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 
+	"github.com/google/wire"
 	"github.com/jinzhu/copier"
 )
+
+var BizProviderSet = wire.NewSet(NewBiz, wire.Bind(new(BizFactory), new(*biz)))
 
 // Define biz layer
 type BizFactory interface {
