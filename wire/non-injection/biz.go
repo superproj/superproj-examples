@@ -2,20 +2,29 @@ package main
 
 import (
 	"context"
+	"sync"
 
 	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
+)
+
+var (
+	bizOnce sync.Once
+	b       *biz
 )
 
 type biz struct {
 	ds *datastore
 }
 
-func NewBiz(db *gorm.DB) *biz {
-	// 创建 Store 层实例
-	ds := NewStore(db)
+// 创建 Biz 层实例
+func GetBiz() *biz {
+	bizOnce.Do(func() {
+		ds := GetStore()
 
-	return &biz{ds: ds}
+		b = &biz{ds: ds}
+	})
+
+	return b
 }
 
 func (b *biz) ListUser(ctx context.Context, req *ListUserRequest) (*ListUserResponse, error) {

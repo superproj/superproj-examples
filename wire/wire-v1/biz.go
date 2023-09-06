@@ -4,17 +4,14 @@ import (
 	"context"
 
 	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
 )
 
 type biz struct {
 	ds *datastore
 }
 
-func NewBiz(db *gorm.DB) *biz {
-	// 创建 Store 层实例
-	ds := NewStore(db)
-
+// 创建 Biz 层实例
+func NewBiz(ds *datastore) *biz {
 	return &biz{ds: ds}
 }
 

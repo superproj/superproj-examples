@@ -4,23 +4,17 @@ import (
 	"context"
 	"fmt"
 	"time"
-
-	"gorm.io/gorm"
 )
 
-// Define controller layer
 type UserCenterService struct {
 	biz *biz
 }
 
-func NewUserCenterService(db *gorm.DB) *UserCenterService {
-	// 创建 Biz 层实例
-	biz := NewBiz(db)
-
+// 创建 Controller 层实例
+func NewUserCenterService(biz *biz) *UserCenterService {
 	return &UserCenterService{biz: biz}
 }
 
-// Define List User API
 type ListUserRequest struct {
 	Limit  int
 	Offset int

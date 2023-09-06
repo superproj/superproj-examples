@@ -10,6 +10,7 @@ type datastore struct {
 	db *gorm.DB
 }
 
+// 创建 Store 层实例
 func NewStore(db *gorm.DB) *datastore {
 	return &datastore{db}
 }
