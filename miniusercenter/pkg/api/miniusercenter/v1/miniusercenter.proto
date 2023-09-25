@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package miniusercenter.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/superproj/superproj-examples/miniusercenter/pkg/api/miniusercenter/v1;v1";
+
+// Peer lists  hubble peers and notifies of changes.
+service UserCenter{
+  rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/users",
+      body: "*",
+    };
+  }
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string password = 2;
+}
