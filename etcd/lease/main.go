@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -37,5 +38,16 @@ func main() {
 	_, err = lease.KeepAliveOnce(context.TODO(), resp.ID)
 	if err != nil {
 		panic(err)
+	}
+
+	// 永久续期
+	ch, err := client.KeepAlive(context.TODO(), resp.ID)
+	if err != nil {
+		panic(err)
+	}
+
+	for {
+		resp := <-ch
+		fmt.Println("ttl:", resp.TTL)
 	}
 }
