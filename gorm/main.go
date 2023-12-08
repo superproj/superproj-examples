@@ -9,17 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type Product struct {
+// User 结构体表示 user 表的模型.
+type User struct {
 	gorm.Model
-	Code  string `gorm:"column:code"`
-	Price uint   `gorm:"column:price"`
+	Name string `gorm:"column:name"`
+	Age  int    `gorm:"column:age"`
 }
 
-// TableName maps to mysql table name.
-func (p *Product) TableName() string {
-	return "product"
+// 指定 User 结构体映射的 MySQL 表名.
+func (u *User) TableName() string {
+	return "user"
 }
 
+// 命令行选项定义
 var (
 	host     = pflag.StringP("host", "H", "127.0.0.1:3306", "MySQL service host address")
 	username = pflag.StringP("username", "u", "root", "Username for access to mysql service")
@@ -29,7 +31,7 @@ var (
 )
 
 func main() {
-	// Parse command line flags
+	// 解析命令行参数
 	pflag.CommandLine.SortFlags = false
 	pflag.Usage = func() {
 		pflag.PrintDefaults()
@@ -40,6 +42,7 @@ func main() {
 		return
 	}
 
+	// 连接数据库
 	dsn := fmt.Sprintf(`%s:%s@tcp(%s)/%s?charset=utf8&parseTime=%t&loc=%s`,
 		*username,
 		*password,
@@ -52,46 +55,53 @@ func main() {
 		panic("failed to connect database")
 	}
 
-	// 1. Auto migration for given models
-	db.AutoMigrate(&Product{})
+	// 迁移模式，确保表存在
+	db.AutoMigrate(&User{})
 
-	// 2. Insert the value into database
-	if err := db.Create(&Product{Code: "D42", Price: 100}).Error; err != nil {
-		log.Fatalf("Create error: %v", err)
+	// 创建记录
+	user := User{Name: "Alice", Age: 30}
+	if err := db.Create(&user).Error; err != nil {
+		log.Fatalf("Failed to create user record: %v", err)
 	}
-	PrintProducts(db)
+	printUsers(db)
 
-	// 3. Find first record that match given conditions
-	product := &Product{}
-	if err := db.Where("code= ?", "D42").First(&product).Error; err != nil {
-		log.Fatalf("Get product error: %v", err)
+	// 根据查询条件查询记录，返回查询的第一条数据
+	u := &User{}
+	if err := db.Where("age > ?", 25).First(&u).Error; err != nil {
+		log.Fatalf("Failed to get user: %v", err)
 	}
 
-	// 4. Update value in database, if the value doesn't have primary key, will insert it
-	product.Price = 200
-	if err := db.Save(product).Error; err != nil {
-		log.Fatalf("Update product error: %v", err)
+	// 更新记录
+	u.Age = 60
+	if err := db.Save(u).Error; err != nil {
+		log.Fatalf("Failed to update user: %v", err)
 	}
-	PrintProducts(db)
+	printUsers(db)
 
-	// 5. Delete value match given conditions
-	if err := db.Where("code = ?", "D42").Delete(&Product{}).Error; err != nil {
-		log.Fatalf("Delete product error: %v", err)
+	// 根据指定的查询条件，删除记录
+	if err := db.Where("age > ?", 25).Delete(&User{}).Error; err != nil {
+		log.Fatalf("Failed to delete user: %v", err)
 	}
-	PrintProducts(db)
+	printUsers(db)
 }
 
-// List products
-func PrintProducts(db *gorm.DB) {
-	products := make([]*Product, 0)
+// 打印数据库 `user` 表中的记录
+func printUsers(db *gorm.DB) {
+	users := make([]*User, 0)
 	var count int64
-	d := db.Where("code like ?", "%D%").Offset(0).Limit(2).Order("id desc").Find(&products).Offset(-1).Limit(-1).Count(&count)
+	d := db.Offset(0).
+		Limit(2).
+		Order("id desc").
+		Find(&users).
+		Offset(-1).
+		Limit(-1).
+		Count(&count)
 	if d.Error != nil {
-		log.Fatalf("List products error: %v", d.Error)
+		log.Fatalf("List users error: %v", d.Error)
 	}
 
-	log.Printf("totalcount: %d", count)
-	for _, product := range products {
-		log.Printf("\tcode: %s, price: %d\n", product.Code, product.Price)
+	log.Printf("User total count: %d", count)
+	for _, user := range users {
+		log.Printf("\tName: %s, Age: %d\n", user.Name, user.Age)
 	}
 }
