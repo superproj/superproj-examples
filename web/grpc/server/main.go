@@ -25,6 +25,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	pb "github.com/superproj/superproj-examples/web/grpc/helloworld"
 )
@@ -51,6 +52,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterGreeterServer(s, &server{})
+	reflection.Register(s)
 	log.Printf("Start grpc server on %s\n", port)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
